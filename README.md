@@ -1,0 +1,187 @@
+# PIKE — Parameter-Independent Koopman Expansion
+
+[![Under Review](https://img.shields.io/badge/IEEE%20TAC-under%20review-orange)](paper.pdf)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c)](https://pytorch.org/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
+This repository contains the implementation of the **PIKE** (Parameter-Independent Koopman Expansion) algorithm for polynomial systems, as well as the family of estimation algorithms introduced in the companion paper:
+
+> **Transfer Learning via Parameter-Independent Koopman Expansion**  
+> Thomas Mongaillard, Vineeth S. Varma, Samson Lasaulce  
+> *Under review — IEEE Transactions on Automatic Control*  
+> Preprint available: [`paper.pdf`](paper.pdf)
+
+---
+
+## What this code does
+
+PIKE takes a continuous-time dynamical system whose vector field is **affine in a set of scalar parameters** and automatically constructs a dictionary of polynomial observables that is **Koopman-invariant for all parameter values simultaneously**. Once this dictionary is built, identifying the system at any new parameter value reduces to a low-dimensional regression problem — no need to re-select or retrain the dictionary from scratch.
+
+The repository provides:
+
+- **`PIKE`** — the iterative closure algorithm that generates the dictionary and the associated Koopman matrices `K0, K1, ..., Kp`
+- **`KoopmanEstimation`** — a collection of estimation algorithms (gEDMD, iEDMD, pEDMD, empirical-pEDMD, sparse-iEDMD) that exploit the dictionary structure for transfer learning
+- Two benchmark systems: a **closed polynomial system** (exact finite-dimensional closure) and the **Van der Pol oscillator** (truncated dictionary)
+- Reproducible experiments for all figures in the paper
+
+<p align="center">
+  <img src="fig/poly_error_vs_L.png" width="48%" alt="Polynomial system results"/>
+  <img src="fig/vdp_error_vs_L.png" width="48%" alt="Van der Pol results"/>
+</p>
+
+*Average prediction error vs. number of training points for the closed polynomial system (left) and the Van der Pol oscillator (right). Methods that exploit the PIKE structure (pEDMD, e-pEDMD, s-iEDMD) achieve low error with as few as one training point.*
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/yourname/pike.git
+cd pike
+pip install -e .
+```
+
+**Requirements:** Python 3.10+, PyTorch 2.0+, NumPy, SciPy, scikit-learn, tqdm.  
+A CUDA-capable GPU is strongly recommended for the simulation notebooks. Plotting notebooks can be run on CPU with pre-computed results (see [Reproducing the figures](#reproducing-the-figures)).
+
+---
+
+## Quickstart
+
+### 1. Define a parameter-affine system
+
+A system $\dot{x} = f_0(x) + \sum_{i=1}^{P} \mu_i f_i(x)$ is specified by its vector fields as sparse monomial dictionaries.
+
+```python
+from pike import PolyParamAffineSystem, PIKE, KoopmanEstimation
+
+# Example: dx1/dt = mu1*x1,  dx2/dt = x1^2 + mu2*x2,  dx3/dt = x1^3 + x2^2 + mu3*x3
+f_mono = [
+    # drift f0: zero for all components
+    [{}, {(2, 0, 0): 1}, {(3, 0, 0): 1, (0, 2, 0): 1}],
+    # f1 (multiplied by mu1)
+    [{(1, 0, 0): 1}, {}, {}],
+    # f2 (multiplied by mu2)
+    [{}, {(0, 1, 0): 1}, {}],
+    # f3 (multiplied by mu3)
+    [{}, {}, {(0, 0, 1): 1}],
+]
+
+system = PolyParamAffineSystem(n_vars=3, degree=5, f_mono=f_mono, device="cuda")
+```
+
+Or use one of the built-in benchmark systems:
+
+```python
+from pike import ClosedPoly, VanDerPolSystem
+
+system = ClosedPoly(n_vars=3, degree=5, device="cuda")
+system = VanDerPolSystem(degree=12, device="cuda")
+```
+
+### 2. Run PIKE to generate the dictionary
+
+```python
+pike = PIKE(system)
+psi_defs, K = pike.generate()
+# psi_defs: list of M observable definitions
+# K: array of shape (P+1, M, M) — the Koopman matrices K0, K1, ..., Kp
+
+print(pike)
+# Dictionary of 8 observables. Koopman matrices: K0 (8x8), K1 (8x8), K2 (8x8), K3 (8x8)
+```
+
+### 3. Estimate K(µ) at a new parameter value from data
+
+```python
+import torch
+
+ke = KoopmanEstimation(psi_defs, n_vars=3, device="cuda")
+
+# Collect state snapshots and time derivatives for a new system
+X     = torch.rand(3, 50, device="cuda", dtype=torch.float64) * 10 - 5
+X_dot = system(X, mu=torch.tensor([-1., -2., -3.], device="cuda", dtype=torch.float64))
+
+# pEDMD: estimate mu directly (requires K0...Kp from PIKE)
+K_mu, mu_est, _ = ke.pEDMD(K, psi=None, dot_psi=None, X=X, X_dot=X_dot)
+
+# iEDMD: estimate the full Koopman matrix (requires only the dictionary)
+K_mu, _ = ke.gEDMD(*ke._resolve_lifted(X, X_dot))
+```
+
+---
+
+## Reproducing the figures
+
+Each experiment is split into two notebooks to allow figure editing without re-running long simulations.
+
+| Notebook | Role | GPU required |
+|---|---|---|
+| `experiments/poly_system/simulate.ipynb` | Runs all algorithms, saves results to `results/` | Yes |
+| `experiments/poly_system/plot.ipynb` | Loads results, generates figures | No |
+| `experiments/van_der_pol/simulate.ipynb` | Idem for the Van der Pol oscillator | Yes |
+| `experiments/van_der_pol/plot.ipynb` | Idem | No |
+
+**To reproduce figures without re-running simulations**, download the pre-computed results from the [latest release](https://github.com/yourname/pike/releases/latest) and place the `.npz` files in the `results/` folder. Then run any `plot.ipynb` directly.
+
+Each `plot.ipynb` also includes a cell that downloads these files automatically if they are not found locally.
+
+---
+
+## Implementing your own system
+
+To apply PIKE to a new system, subclass `PolyParamAffineSystem` and define its vector fields in `f_mono`. The closure procedure, estimation algorithms, and experiment notebooks are system-agnostic: pass your system instance to `PIKE` and `KoopmanEstimation` in place of the built-in ones.
+
+See `pike/systems.py` for `ClosedPoly` and `VanDerPolSystem` as reference implementations.
+
+---
+
+## Repository structure
+
+```
+pike/
+├── paper.pdf
+├── requirements.txt
+│
+├── pike/                          # installable package
+│   ├── __init__.py
+│   ├── systems.py                 # PolyParamAffineSystem, ClosedPoly, VanDerPolSystem
+│   ├── algorithm.py               # PIKE
+│   ├── estimation.py              # KoopmanEstimation
+│   └── utils.py                   # polynomial algebra utilities
+│
+├── experiments/
+│   ├── README.md
+│   ├── poly_system/
+│   │   ├── simulate.ipynb
+│   │   └── plot.ipynb
+│   └── van_der_pol/
+│       ├── simulate.ipynb
+│       └── plot.ipynb
+│
+├── results/                       # .npz output files (gitignored, see releases)
+└── figures/                       # exported figures
+```
+
+---
+
+## Citation
+
+If you use this code, please cite:
+
+```bibtex
+@article{mongaillard2025pike,
+  title   = {Transfer Learning via Parameter-Independent {Koopman} Expansion},
+  author  = {Mongaillard, Thomas and Varma, Vineeth S. and Lasaulce, Samson},
+  journal = {IEEE Transactions on Automatic Control},
+  year    = {2025},
+  note    = {Under review}
+}
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

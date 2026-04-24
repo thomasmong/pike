@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+title: "PIKE: Parameter-Independent Koopman Expansion"
+message: "If you use this software, please cite it using the metadata below."
+type: software
+license: GPL-3.0
+repository-code: "https://github.com/thomasmong/pike"
+
+authors:
+  - family-names: Mongaillard
+    given-names: Thomas
+    orcid: "https://orcid.org/0009-0003-0612-2594"
+    affiliation: "Université de Lorraine, CNRS, CRAN, F-54000 Nancy, France"
+
+abstract: >
+  Implementation of the PIKE (Parameter-Independent Koopman Expansion) algorithm,
+  an iterative closure procedure that constructs a parameter-independent dictionary
+  of observables for continuous-time dynamical systems whose vector field is affine
+  in scalar parameters. The repository also provides a family of Koopman estimation
+  algorithms (gEDMD, iEDMD, pEDMD, empirical-pEDMD, sparse-iEDMD) that exploit
+  the dictionary structure for transfer learning across parameter values.
+
+keywords:
+  - koopman operator
+  - dynamical systems
+  - system identification
+  - transfer learning
+  - EDMD
+
+preferred-citation:
+  type: article
+  title: "Transfer Learning via Parameter-Independent Koopman Expansion"
+  authors:
+    - family-names: Mongaillard
+      given-names: Thomas
+      orcid: "https://orcid.org/0009-0003-0612-2594"
+    - family-names: Varma
+      given-names: Vineeth S.
+    - family-names: Lasaulce
+      given-names: Samson
+  journal: "IEEE Transactions on Automatic Control"
+  year: 2026
+  notes: "Under review"
