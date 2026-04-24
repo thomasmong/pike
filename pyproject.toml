@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pike-koopman"
-version = "1.0.0"
+version = "0.1.0"
 description = "Parameter-Independent Koopman Expansion for parametric dynamical systems"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -41,15 +41,11 @@ experiments = [
     "tqdm",
     "matplotlib",
     "jupyter",
-]
-dev = [
-    "pytest",
-    "pytest-cov",
-]
+]   
 
 [project.urls]
-Repository   = "https://github.com/yourname/pike"
-Paper        = "https://github.com/yourname/pike/blob/main/paper.pdf"
+Repository   = "https://github.com/thomasmong/pike"
+Paper        = "https://github.com/thomasmong/pike/blob/main/paper.pdf"
 
 [tool.setuptools.packages.find]
 where = ["."]

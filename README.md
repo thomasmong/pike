@@ -5,6 +5,8 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c)](https://pytorch.org/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bVJ7gLQP4Vc?si=8Yjpl6p0NEu3iNyn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 This repository contains the implementation of the **PIKE** (Parameter-Independent Koopman Expansion) algorithm for polynomial systems, as well as the family of estimation algorithms introduced in the companion paper:
 
 > **Transfer Learning via Parameter-Independent Koopman Expansion**  
@@ -32,7 +34,7 @@ The repository provides:
 ## Installation
 
 ```bash
-git clone https://github.com/yourname/pike.git
+git clone https://github.com/thomasmong/pike.git
 cd pike
 pip install -e .
 ```
@@ -80,16 +82,11 @@ pike = PIKE(system)
 psi_defs, K = pike.generate()
 # psi_defs: list of M observable definitions
 # K: array of shape (P+1, M, M) — the Koopman matrices K0, K1, ..., Kp
-
-print(pike)
-# Dictionary of 8 observables. Koopman matrices: K0 (8x8), K1 (8x8), K2 (8x8), K3 (8x8)
 ```
 
 ### 3. Estimate K(µ) at a new parameter value from data
 
 ```python
-import torch
-
 ke = KoopmanEstimation(psi_defs, n_vars=3, device="cuda")
 
 # Collect state snapshots and time derivatives for a new system
@@ -98,9 +95,6 @@ X_dot = system(X, mu=torch.tensor([-1., -2., -3.], device="cuda", dtype=torch.fl
 
 # pEDMD: estimate mu directly (requires K0...Kp from PIKE)
 K_mu, mu_est, _ = ke.pEDMD(K, psi=None, dot_psi=None, X=X, X_dot=X_dot)
-
-# iEDMD: estimate the full Koopman matrix (requires only the dictionary)
-K_mu, _ = ke.gEDMD(*ke._resolve_lifted(X, X_dot))
 ```
 
 ## Repository structure
