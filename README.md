@@ -5,7 +5,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c)](https://pytorch.org/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/bVJ7gLQP4Vc?si=8Yjpl6p0NEu3iNyn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![PIKE — Parameter-Independent Koopman Expansion](https://img.youtube.com/vi/bVJ7gLQP4Vc/maxresdefault.jpg)](https://www.youtube.com/watch?v=bVJ7gLQP4Vc)
 
 This repository contains the implementation of the **PIKE** (Parameter-Independent Koopman Expansion) algorithm for polynomial systems, as well as the family of estimation algorithms introduced in the companion paper:
 
