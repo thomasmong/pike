@@ -38,7 +38,7 @@ pip install -e .
 ```
 
 **Requirements:** Python 3.10+, PyTorch 2.0+, NumPy, SciPy, scikit-learn, tqdm.  
-A CUDA-capable GPU is strongly recommended for the simulation notebooks. Plotting notebooks can be run on CPU with pre-computed results (see [Reproducing the figures](#reproducing-the-figures)).
+A CUDA-capable GPU is strongly recommended for the simulation notebooks. Plotting notebooks can be run on CPU with pre-computed results.
 
 ## Quickstart
 
