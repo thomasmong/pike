@@ -9,10 +9,7 @@ This repository contains the implementation of the **PIKE** (Parameter-Independe
 
 > **Transfer Learning via Parameter-Independent Koopman Expansion**  
 > Thomas Mongaillard, Vineeth S. Varma, Samson Lasaulce  
-> *Under review — IEEE Transactions on Automatic Control*  
-> Preprint available: [`paper.pdf`](paper.pdf)
-
----
+> *Under review — IEEE Transactions on Automatic Control*
 
 ## What this code does
 
@@ -26,13 +23,11 @@ The repository provides:
 - Reproducible experiments for all figures in the paper
 
 <p align="center">
-  <img src="fig/poly_error_vs_L.png" width="48%" alt="Polynomial system results"/>
-  <img src="fig/vdp_error_vs_L.png" width="48%" alt="Van der Pol results"/>
+  <img src="experiments/results/poly_error_vs_L.png" width="48%" alt="Polynomial system results"/>
+  <img src="experiments/results/vdp_error_vs_L.png" width="48%" alt="Van der Pol results"/>
 </p>
 
 *Average prediction error vs. number of training points for the closed polynomial system (left) and the Van der Pol oscillator (right). Methods that exploit the PIKE structure (pEDMD, e-pEDMD, s-iEDMD) achieve low error with as few as one training point.*
-
----
 
 ## Installation
 
@@ -44,8 +39,6 @@ pip install -e .
 
 **Requirements:** Python 3.10+, PyTorch 2.0+, NumPy, SciPy, scikit-learn, tqdm.  
 A CUDA-capable GPU is strongly recommended for the simulation notebooks. Plotting notebooks can be run on CPU with pre-computed results (see [Reproducing the figures](#reproducing-the-figures)).
-
----
 
 ## Quickstart
 
@@ -110,33 +103,6 @@ K_mu, mu_est, _ = ke.pEDMD(K, psi=None, dot_psi=None, X=X, X_dot=X_dot)
 K_mu, _ = ke.gEDMD(*ke._resolve_lifted(X, X_dot))
 ```
 
----
-
-## Reproducing the figures
-
-Each experiment is split into two notebooks to allow figure editing without re-running long simulations.
-
-| Notebook | Role | GPU required |
-|---|---|---|
-| `experiments/poly_system/simulate.ipynb` | Runs all algorithms, saves results to `results/` | Yes |
-| `experiments/poly_system/plot.ipynb` | Loads results, generates figures | No |
-| `experiments/van_der_pol/simulate.ipynb` | Idem for the Van der Pol oscillator | Yes |
-| `experiments/van_der_pol/plot.ipynb` | Idem | No |
-
-**To reproduce figures without re-running simulations**, download the pre-computed results from the [latest release](https://github.com/yourname/pike/releases/latest) and place the `.npz` files in the `results/` folder. Then run any `plot.ipynb` directly.
-
-Each `plot.ipynb` also includes a cell that downloads these files automatically if they are not found locally.
-
----
-
-## Implementing your own system
-
-To apply PIKE to a new system, subclass `PolyParamAffineSystem` and define its vector fields in `f_mono`. The closure procedure, estimation algorithms, and experiment notebooks are system-agnostic: pass your system instance to `PIKE` and `KoopmanEstimation` in place of the built-in ones.
-
-See `pike/systems.py` for `ClosedPoly` and `VanDerPolSystem` as reference implementations.
-
----
-
 ## Repository structure
 
 ```
@@ -153,35 +119,17 @@ pike/
 │
 ├── experiments/
 │   ├── README.md
+│   ├── results/
 │   ├── poly_system/
 │   │   ├── simulate.ipynb
 │   │   └── plot.ipynb
 │   └── van_der_pol/
 │       ├── simulate.ipynb
 │       └── plot.ipynb
-│
-├── results/                       # .npz output files (gitignored, see releases)
+|
 └── figures/                       # exported figures
 ```
 
----
-
-## Citation
-
-If you use this code, please cite:
-
-```bibtex
-@article{mongaillard2025pike,
-  title   = {Transfer Learning via Parameter-Independent {Koopman} Expansion},
-  author  = {Mongaillard, Thomas and Varma, Vineeth S. and Lasaulce, Samson},
-  journal = {IEEE Transactions on Automatic Control},
-  year    = {2025},
-  note    = {Under review}
-}
-```
-
----
-
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPL3 License — see the [LICENSE](LICENSE) file for details.

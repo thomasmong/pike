@@ -2,4 +2,5 @@
 __pycache__/
 *.egg-info/
 .ipynb_checkpoints/
-experiments/results/*
+experiments/results/*.pdf
+experiments/results/*.npz
