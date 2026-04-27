@@ -6,7 +6,7 @@
 
 [![PIKE — Parameter-Independent Koopman Expansion](https://img.youtube.com/vi/bVJ7gLQP4Vc/maxresdefault.jpg)](https://www.youtube.com/watch?v=bVJ7gLQP4Vc)
 <p align="center">
-  <em>▶ Click to watch the supplementary video on YouTube</em>
+  ▶<em> Click to watch the supplementary video on YouTube</em>
 </p>
 
 This repository contains the implementation of the **PIKE** (Parameter-Independent Koopman Expansion) algorithm for polynomial systems, as well as the family of estimation algorithms introduced in the companion paper:
