@@ -4,11 +4,8 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c)](https://pytorch.org/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
+[![PIKE — Parameter-Independent Koopman Expansion](https://img.youtube.com/vi/bVJ7gLQP4Vc/maxresdefault.jpg)](https://www.youtube.com/watch?v=bVJ7gLQP4Vc)
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=bVJ7gLQP4Vc">
-    <img src="https://img.youtube.com/vi/bVJ7gLQP4Vc/maxresdefault.jpg" 
-         alt="▶ Watch the supplementary video" width="600"/>
-  </a><br/>
   <em>▶ Click to watch the supplementary video on YouTube</em>
 </p>
 
