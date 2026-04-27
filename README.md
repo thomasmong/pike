@@ -86,7 +86,7 @@ psi_defs, K = pike.generate()
 ### 3. Estimate K(µ) at a new parameter value from data
 
 ```python
-ke = KoopmanEstimation(psi_defs, n_vars=3, device="cuda")
+ke = KoopmanEstimation(psi_defs, input_dim=3, device="cuda")
 
 # Collect state snapshots and time derivatives for a new system
 X     = torch.rand(3, 50, device="cuda", dtype=torch.float64) * 10 - 5
