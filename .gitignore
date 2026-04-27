@@ -17,3 +17,4 @@ build/
 # Experiment results — ignore everything except the placeholder
 experiments/results/*
 !experiments/results/.gitkeep
+!experiments/results/*.png
