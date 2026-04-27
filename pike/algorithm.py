@@ -136,7 +136,7 @@ class PIKE:
     # Dictionary generation
     # ------------------------------------------------------------------
 
-    def generate(self, mu = None, tol: float = 1e-6) -> tuple:
+    def generate(self, tol: float = 1e-6) -> tuple:
         """Generate the Koopman-invariant dictionary and operator matrices.
 
         Parameters
@@ -165,59 +165,25 @@ class PIKE:
         K_data = [{} for _ in range(self.system.n_params + 1)]
 
         closed = True
-
-        if mu is None:
-            for j, h in enumerate(D):              # D grows in place during iteration
-                for (ind_f,f) in enumerate(self.system.f_mono):
-                    try:
-                        h_new = self._koopman(h, f)
-                    except OutOfDictionaryError:
-                        # Lie derivative of h along f exceeds the dictionary degree;
-                        # skip this pair (no entry in K, no new observable added).
-                        closed = False
-                        continue
-                    if h_new:
-                        coeffs, res = self._proj(h_new, D)
-                        # Coeffs from D
-                        for k, c in enumerate(coeffs):
-                            if c != 0:
-                                K_data[ind_f][(j, k)] = c
-                        if res > tol:
-                            B = self._to_matrix(D)
-                            r_vec = self._to_vector(h_new) - coeffs @ B
-                            r = self._from_vector(r_vec, tol)
-                            if r:
-                                K_data[ind_f][(j, m)] = 1.0
-                                D.append(r)
-                                m += 1
-        else:
-            f_total = [
-                list(self.system.f_mono[0][j]) + [
-                    (exp, mu[i] * coeff)
-                    for i in range(self.system.n_params)
-                    for exp, coeff in self.system.f_mono[i + 1][j].items()
-                ]
-                for j in range(self.system.n_vars)
-            ]
-            for j, h in enumerate(D):
+        for j, h in enumerate(D):              # D grows in place during iteration
+            for (ind_f,f) in enumerate(self.system.f_mono):
                 try:
-                    h_new = self._koopman(h, f_total)
+                    h_new = self._koopman(h, f)
                 except OutOfDictionaryError:
-                    # Lie derivative of h exceeds the dictionary degree;
-                    # skip this observable (no entry in K, no new observable added).
                     closed = False
                     continue
                 if h_new:
                     coeffs, res = self._proj(h_new, D)
+                    # Coeffs from D
                     for k, c in enumerate(coeffs):
                         if c != 0:
-                            K_data[0][(j, k)] = c
+                            K_data[ind_f][(j, k)] = c
                     if res > tol:
                         B = self._to_matrix(D)
                         r_vec = self._to_vector(h_new) - coeffs @ B
                         r = self._from_vector(r_vec, tol)
                         if r:
-                            K_data[0][(j, m)] = 1.0
+                            K_data[ind_f][(j, m)] = 1.0
                             D.append(r)
                             m += 1
 

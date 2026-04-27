@@ -1,6 +1,5 @@
 # PIKE — Parameter-Independent Koopman Expansion
 
-[![Under Review](https://img.shields.io/badge/IEEE%20TAC-under%20review-orange)](paper.pdf)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c)](https://pytorch.org/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
@@ -94,15 +93,13 @@ X     = torch.rand(3, 50, device="cuda", dtype=torch.float64) * 10 - 5
 X_dot = system(X, mu=torch.tensor([-1., -2., -3.], device="cuda", dtype=torch.float64))
 
 # pEDMD: estimate mu directly (requires K0...Kp from PIKE)
-K_mu, mu_est, _ = ke.pEDMD(K, psi=None, dot_psi=None, X=X, X_dot=X_dot)
+K_mu, mu_est, _ = ke.pEDMD(K, X=X, X_dot=X_dot)
 ```
 
 ## Repository structure
 
 ```
 pike/
-├── paper.pdf
-├── requirements.txt
 │
 ├── pike/                          # installable package
 │   ├── __init__.py
@@ -120,8 +117,6 @@ pike/
 │   └── van_der_pol/
 │       ├── simulate.ipynb
 │       └── plot.ipynb
-|
-└── figures/                       # exported figures
 ```
 
 ## License
