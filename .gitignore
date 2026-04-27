@@ -1,6 +1,19 @@
-.env/
+# Python
 __pycache__/
+*.pyc
 *.egg-info/
+dist/
+build/
+
+# Virtual environment
+.env/
+
+# Jupyter
 .ipynb_checkpoints/
-experiments/results/*.pdf
-experiments/results/*.npz
+
+# macOS
+.DS_Store
+
+# Experiment results — ignore everything except the placeholder
+experiments/results/*
+!experiments/results/.gitkeep
