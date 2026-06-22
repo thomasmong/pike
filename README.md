@@ -9,11 +9,7 @@
   ▶<em> Click to watch the supplementary video on YouTube</em>
 </p>
 
-This repository contains the implementation of the **PIKE** (Parameter-Independent Koopman Expansion) algorithm for polynomial systems, as well as the family of estimation algorithms introduced in the companion paper:
-
-> **Transfer Learning via Parameter-Independent Koopman Expansion**  
-> Thomas Mongaillard, Vineeth S. Varma, Samson Lasaulce  
-> *Under review — IEEE Transactions on Automatic Control*
+This repository contains the implementation of the **PIKE** (Parameter-Independent Koopman Expansion) algorithm for polynomial systems, as well as a family of estimation algorithms.
 
 ## What this code does
 
